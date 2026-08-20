@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>PixelFrameCineLaptop</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#080808;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    overflow-x:hidden;
+}
+
+header{
+    background:#111;
+    border-bottom:1px solid #333;
+    padding:12px;
+    text-align:center;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#00eaff;
+}
+
+.toolbar{
+    background:#151515;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    background:#242424;
+    color:white;
+    border:1px solid #444;
+    border-radius:5px;
+    padding:7px 10px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#333;
+}
+
+button.active{
+    background:#00aeca;
+}
+
+input[type="number"]{
+    width:70px;
+    padding:6px;
+    background:#222;
+    color:white;
+    border:1px solid #444;
+}
+
+input[type="color"]{
+    width:45px;
+    height:34px;
+    padding:2px;
+}
+
+input[type="range"]{
+    vertical-align:middle;
+}
+
+select{
+    background:#222;
+    color:white;
+    padding:6px;
+    border:1px solid #444;
+}
+
+.main{
+    display:flex;
+    min-height:calc(100vh - 100px);
+}
+
+.side{
+    width:210px;
+    background:#101010;
+    padding:10px;
+    border-right:1px solid #333;
+}
+
+.side h3{
+    margin-top:5px;
+}
+
+.workspace{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:auto;
+    padding:20px;
+}
+
+.canvasBox{
+    position:relative;
+    background:#777;
+    padding:8px;
+    box-shadow:0 0 30px #000;
+}
+
+canvas{
+    display:block;
+    background:white;
+    image-rendering:pixelated;
+    image-rendering:crisp-edges;
+    touch-action:none;
+    cursor:crosshair;
+}
+
+.timeline{
+    background:#111;
+    border-top:1px solid #333;
+    padding:10px;
+    overflow-x:auto;
+}
+
+.frames{
+    display:flex;
+    gap:8px;
+}
+
+.frame{
+    min-width:90px;
+    padding:5px;
+    background:#222;
+    border:2px solid #444;
+    cursor:pointer;
+}
+
+.frame.active{
+    border-color:#00eaff;
+}
+
+.frame canvas{
+    width:80px;
+    height:80px;
+    background:white;
+}
+
+.frameTitle{
+    text-align:center;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.status{
+    text-align:center;
+    color:#aaa;
+    padding:6px;
+    font-size:13px;
+}
+
+.panelButton{
+    width:100%;
+    margin-bottom:6px;
+}
+
+#intro{
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:1000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    animation:introOut 4s forwards;
+}
+
+.introLogo{
+    font-size:34px;
+    font-weight:bold;
+    animation:introLogo 2s ease;
+}
+
+.introLogo span{
+    color:#00eaff;
+}
+
+.introSub{
+    color:#888;
+    margin-top:10px;
+}
+
+@keyframes introLogo{
+    from{
+        transform:scale(.5);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+@keyframes introOut{
+    0%,75%{
+        opacity:1;
+        pointer-events:auto;
+    }
+    100%{
+        opacity:0;
+        pointer-events:none;
+    }
+}
+
+@media(max-width:800px){
+
+    .main{
+        flex-direction:column;
+    }
+
+    .side{
+        width:100%;
+        border-right:0;
+        border-bottom:1px solid #333;
+    }
+
+    .workspace{
+        min-height:450px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+
+<div id="intro">
+
+    <div class="introLogo">
+        🎬 <span>PixelFrame</span> CINE LAPTOP
+    </div>
+
+    <div class="introSub">
+        Frame by frame. Pixel by pixel.
+    </div>
+
+</div>
+
+<header>
+
+    <div class="logo">
+        🎬 <span>PixelFrame</span> CINE LAPTOP
+    </div>
+
+</header>
+
+<!-- HERRAMIENTAS -->
+
+<div class="toolbar">
+
+    <label>
+        Grid:
+        <input
+            id="gridSize"
+            type="number"
+            min="4"
+            max="128"
+            value="16">
+    </label>
+
+    <button onclick="applyGrid()">
+        🔲 Aplicar Grid
+    </button>
+
+    <label>
+        🎨
+        <input
+            id="colorPicker"
+            type="color"
+            value="#000000">
+    </label>
+
+    <button id="pencilBtn" onclick="setTool('pencil')">
+        ✏️ Lápiz
+    </button>
+
+    <button onclick="setTool('eraser')">
+        🧽 Borrador
+    </button>
+
+    <button onclick="setTool('fill')">
+        🪣 Rellenar
+    </button>
+
+    <button onclick="undo()">
+        ↩️
+    </button>
+
+    <button onclick="redo()">
+        ↪️
+    </button>
+
+    <button onclick="clearFrame()">
+        🗑️ Limpiar
+    </button>
+
+</div>
+
+<div class="main">
+
+<!-- PANEL -->
+
+<div class="side">
+
+    <h3>🎞️ Animación</h3>
+
+    <button class="panelButton" onclick="newFrame()">
+        ➕ Nuevo Frame
+    </button>
+
+    <button class="panelButton" onclick="duplicateFrame()">
+        📋 Duplicar Frame
+    </button>
+
+    <button class="panelButton" onclick="deleteFrame()">
+        🗑️ Eliminar Frame
+    </button>
+
+    <button class="panelButton" onclick="playAnimation()">
+        ▶️ Reproducir
+    </button>
+
+    <button class="panelButton" onclick="stopAnimation()">
+        ⏹️ Detener
+    </button>
+
+    <label>
+        FPS:
+        <input
+            id="fps"
+            type="range"
+            min="1"
+            max="30"
+            value="8">
+    </label>
+
+    <span id="fpsValue">8</span>
+
+    <hr>
+
+    <h3>🔍 Vista</h3>
+
+    <label>
+        Zoom:
+        <input
+            id="zoom"
+            type="range"
+            min="1"
+            max="10"
+            value="2">
+    </label>
+
+    <span id="zoomValue">2x</span>
+
+    <br><br>
+
+    <button class="panelButton" onclick="toggleGrid()">
+        🔲 Cuadrícula
+    </button>
+
+    <button class="panelButton" onclick="toggleOnion()">
+        🧅 Onion Skin
+    </button>
+
+    <hr>
+
+    <h3>📚 Capas</h3>
+
+    <select id="layerSelect"
+            class="panelButton"
+            onchange="changeLayer()">
+
+        <option value="0">
+            Capa 1
+        </option>
+
+        <option value="1">
+            Capa 2
+        </option>
+
+        <option value="2">
+            Capa 3
+        </option>
+
+    </select>
+
+    <hr>
+
+    <h3>💾 Proyecto</h3>
+
+    <button class="panelButton" onclick="saveProject()">
+        💾 Guardar
+    </button>
+
+    <button
+        class="panelButton"
+        onclick="document.getElementById('projectFile').click()">
+
+        📂 Cargar
+    </button>
+
+    <input
+        id="projectFile"
+        type="file"
+        accept=".json,.pfc"
+        style="display:none"
+        onchange="loadProject(event)">
+
+    <hr>
+
+    <h3>📤 Exportar</h3>
+
+    <button class="panelButton" onclick="exportPNG()">
+        🖼️ PNG
+    </button>
+
+    <button class="panelButton" onclick="exportVideo()">
+        🎥 VIDEO WebM
+    </button>
+
+</div>
+
+<!-- CANVAS -->
+
+<div class="workspace">
+
+    <div class="canvasBox">
+
+        <canvas
+            id="canvas"
+            width="512"
+            height="512">
+        </canvas>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- TIMELINE -->
+
+<div class="timeline">
+
+    <strong>🎞️ Línea de tiempo</strong>
+
+    <div
+        id="framesContainer"
+        class="frames">
+    </div>
+
+</div>
+
+<div
+    id="status"
+    class="status">
+
+    Frame 1 / 1 · Grid 16×16
+
+</div>
+
+<script>
+
+/* =========================================================
+   PIXELFRAME LAPTOP CINEMA
+   MOTOR DE PIXEL ART
+========================================================= */
+
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+ctx.imageSmoothingEnabled = false;
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let grid = 16;
+
+let pixelSize =
+    canvas.width / grid;
+
+let currentFrame = 0;
+
+let currentLayer = 0;
+
+let showGrid = true;
+
+let onionSkin = false;
+
+let tool = "pencil";
+
+let drawing = false;
+
+let playing = false;
+
+let animationTimer = null;
+
+let history = [];
+
+let redoStack = [];
+
+
+/*
+Cada frame contiene 3 capas.
+Cada capa contiene una matriz de colores.
+*/
+
+let frames = [];
+
+
+/* =========================================================
+   CREAR CAPA
+========================================================= */
+
+function createLayer(){
+
+    const layer = [];
+
+    for(let y=0;y<grid;y++){
+
+        layer[y] = [];
+
+        for(let x=0;x<grid;x++){
+
+            layer[y][x] = null;
+
+        }
+
+    }
+
+    return layer;
+
+}
+
+
+/* =========================================================
+   CREAR FRAME
+========================================================= */
+
+function createFrame(){
+
+    return {
+
+        layers:[
+            createLayer(),
+            createLayer(),
+            createLayer()
+        ]
+
+    };
+
+}
+
+
+/* =========================================================
+   INICIO
+========================================================= */
+
+frames.push(createFrame());
+
+render();
+
+
+/* =========================================================
+   COPIA PROFUNDA
+========================================================= */
+
+function clone(obj){
+
+    return JSON.parse(
+        JSON.stringify(obj)
+    );
+
+}
+
+
+/* =========================================================
+   GUARDAR HISTORIAL
+========================================================= */
+
+function saveHistory(){
+
+    history.push(
+        clone(frames)
+    );
+
+    if(history.length > 30){
+
+        history.shift();
+
+    }
+
+    redoStack = [];
+
+}
+
+
+/* =========================================================
+   DESHACER
+========================================================= */
+
+function undo(){
+
+    if(history.length === 0)
+        return;
+
+    redoStack.push(
+        clone(frames)
+    );
+
+    frames =
+        history.pop();
+
+    render();
+
+}
+
+
+/* =========================================================
+   REHACER
+========================================================= */
+
+function redo(){
+
+    if(redoStack.length === 0)
+        return;
+
+    history.push(
+        clone(frames)
+    );
+
+    frames =
+        redoStack.pop();
+
+    render();
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /*
+    Fondo
+    */
+
+    ctx.fillStyle="#ffffff";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /*
+    ONION SKIN
+    */
+
+    if(
+        onionSkin &&
+        currentFrame > 0
+    ){
+
+        drawFrame(
+            frames[currentFrame-1],
+            .25
+        );
+
+    }
+
+
+    /*
+    FRAME ACTUAL
+    */
+
+    drawFrame(
+        frames[currentFrame],
+        1
+    );
+
+
+    /*
+    GRID
+    */
+
+    if(showGrid){
+
+        drawGrid();
+
+    }
+
+
+    updateStatus();
+
+    updateTimeline();
+
+}
+
+
+/* =========================================================
+   DIBUJAR FRAME
+========================================================= */
+
+function drawFrame(frame,alpha){
+
+    ctx.globalAlpha = alpha;
+
+    for(
+        let l=0;
+        l<frame.layers.length;
+        l++
+    ){
+
+        const layer =
+            frame.layers[l];
+
+        for(
+            let y=0;
+            y<grid;
+            y++
+        ){
+
+            for(
+                let x=0;
+                x<grid;
+                x++
+            ){
+
+                const color =
+                    layer[y][x];
+
+                if(color){
+
+                    ctx.fillStyle =
+                        color;
+
+                    ctx.fillRect(
+
+                        x * pixelSize,
+
+                        y * pixelSize,
+
+                        pixelSize,
+
+                        pixelSize
+
+                    );
+
+                }
+
+            }
+
+        }
+
+    }
+
+    ctx.globalAlpha = 1;
+
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+function drawGrid(){
+
+    ctx.strokeStyle =
+        "rgba(0,0,0,.18)";
+
+    ctx.lineWidth = 1;
+
+    for(
+        let i=0;
+        i<=grid;
+        i++
+    ){
+
+        const p =
+            Math.round(
+                i * pixelSize
+            ) + .5;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            p,
+            0
+        );
+
+        ctx.lineTo(
+            p,
+            canvas.height
+        );
+
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            p
+        );
+
+        ctx.lineTo(
+            canvas.width,
+            p
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+
+
+/* =========================================================
+   OBTENER POSICIÓN
+========================================================= */
+
+function getCell(e){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const scaleX =
+        canvas.width /
+        rect.width;
+
+    const scaleY =
+        canvas.height /
+        rect.height;
+
+    const px =
+        (e.clientX - rect.left)
+        * scaleX;
+
+    const py =
+        (e.clientY - rect.top)
+        * scaleY;
+
+    return {
+
+        x:Math.floor(px / pixelSize),
+
+        y:Math.floor(py / pixelSize)
+
+    };
+
+}
+
+
+/* =========================================================
+   PINTAR
+========================================================= */
+
+function paint(e){
+
+    const cell =
+        getCell(e);
+
+    if(
+        cell.x < 0 ||
+        cell.y < 0 ||
+        cell.x >= grid ||
+        cell.y >= grid
+    )
+        return;
+
+
+    const layer =
+        frames[currentFrame]
+        .layers[currentLayer];
+
+
+    if(tool === "pencil"){
+
+        layer[cell.y][cell.x] =
+            document.getElementById(
+                "colorPicker"
+            ).value;
+
+    }
+
+
+    if(tool === "eraser"){
+
+        layer[cell.y][cell.x] =
+            null;
+
+    }
+
+
+    if(tool === "fill"){
+
+        floodFill(
+            cell.x,
+            cell.y
+        );
+
+    }
+
+
+    render();
+
+}
+
+
+/* =========================================================
+   POINTER
+========================================================= */
+
+canvas.addEventListener(
+    "pointerdown",
+    e=>{
+
+        e.preventDefault();
+
+        saveHistory();
+
+        drawing = true;
+
+        paint(e);
+
+    }
+);
+
+
+canvas.addEventListener(
+    "pointermove",
+    e=>{
+
+        if(!drawing)
+            return;
+
+        paint(e);
+
+    }
+);
+
+
+window.addEventListener(
+    "pointerup",
+    ()=>{
+
+        drawing=false;
+
+    }
+);
+
+
+/* =========================================================
+   HERRAMIENTAS
+========================================================= */
+
+function setTool(newTool){
+
+    tool =
+        newTool;
+
+}
+
+
+/* =========================================================
+   RELLENO
+========================================================= */
+
+function floodFill(x,y){
+
+    const layer =
+        frames[currentFrame]
+        .layers[currentLayer];
+
+    const target =
+        layer[y][x];
+
+    const replacement =
+        document.getElementById(
+            "colorPicker"
+        ).value;
+
+
+    if(target === replacement)
+        return;
+
+
+    const queue = [[x,y]];
+
+
+    while(queue.length){
+
+        const [
+            cx,
+            cy
+        ] =
+            queue.shift();
+
+
+        if(
+            cx<0 ||
+            cy<0 ||
+            cx>=grid ||
+            cy>=grid
+        )
+            continue;
+
+
+        if(
+            layer[cy][cx] !== target
+        )
+            continue;
+
+
+        layer[cy][cx] =
+            replacement;
+
+
+        queue.push(
+            [cx+1,cy],
+            [cx-1,cy],
+            [cx,cy+1],
+            [cx,cy-1]
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CAMBIAR GRID
+========================================================= */
+
+function applyGrid(){
+
+    let newGrid =
+        parseInt(
+            document.getElementById(
+                "gridSize"
+            ).value
+        );
+
+
+    if(
+        isNaN(newGrid) ||
+        newGrid < 4
+    ){
+
+        newGrid = 4;
+
+    }
+
+
+    if(newGrid > 128){
+
+        newGrid = 128;
+
+    }
+
+
+    saveHistory();
+
+
+    /*
+    Convertimos TODOS los frames
+    a la nueva resolución.
+    */
+
+    frames =
+        frames.map(frame=>{
+
+            const newFrame =
+                createFrame();
+
+
+            for(
+                let l=0;
+                l<3;
+                l++
+            ){
+
+                for(
+                    let y=0;
+                    y<newGrid;
+                    y++
+                ){
+
+                    for(
+                        let x=0;
+                        x<newGrid;
+                        x++
+                    ){
+
+                        if(
+                            y < grid &&
+                            x < grid
+                        ){
+
+                            newFrame
+                            .layers[l][y][x] =
+                                frame
+                                .layers[l][y][x];
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            return newFrame;
+
+        });
+
+
+    grid =
+        newGrid;
+
+
+    pixelSize =
+        canvas.width / grid;
+
+
+    render();
+
+}
+
+
+/* =========================================================
+   NUEVO FRAME
+========================================================= */
+
+function newFrame(){
+
+    saveHistory();
+
+    frames.splice(
+        currentFrame + 1,
+        0,
+        createFrame()
+    );
+
+    currentFrame++;
+
+    render();
+
+}
+
+
+/* =========================================================
+   DUPLICAR FRAME
+========================================================= */
+
+function duplicateFrame(){
+
+    saveHistory();
+
+    frames.splice(
+
+        currentFrame + 1,
+
+        0,
+
+        clone(
+            frames[currentFrame]
+        )
+
+    );
+
+    currentFrame++;
+
+    render();
+
+}
+
+
+/* =========================================================
+   ELIMINAR FRAME
+========================================================= */
+
+function deleteFrame(){
+
+    if(frames.length <= 1){
+
+        clearFrame();
+
+        return;
+
+    }
+
+
+    saveHistory();
+
+    frames.splice(
+        currentFrame,
+        1
+    );
+
+
+    if(
+        currentFrame >=
+        frames.length
+    ){
+
+        currentFrame =
+            frames.length - 1;
+
+    }
+
+
+    render();
+
+}
+
+
+/* =========================================================
+   LIMPIAR FRAME
+========================================================= */
+
+function clearFrame(){
+
+    saveHistory();
+
+    frames[currentFrame] =
+        createFrame();
+
+    render();
+
+}
+
+
+/* =========================================================
+   CAPAS
+========================================================= */
+
+function changeLayer(){
+
+    currentLayer =
+        parseInt(
+            document.getElementById(
+                "layerSelect"
+            ).value
+        );
+
+}
+
+
+function toggleGrid(){
+
+    showGrid =
+        !showGrid;
+
+    render();
+
+}
+
+
+function toggleOnion(){
+
+    onionSkin =
+        !onionSkin;
+
+    render();
+
+}
+
+
+/* =========================================================
+   ZOOM
+========================================================= */
+
+document.getElementById(
+    "zoom"
+).addEventListener(
+    "input",
+    function(){
+
+        const z =
+            parseInt(
+                this.value
+            );
+
+        document.getElementById(
+            "zoomValue"
+        ).textContent =
+            z + "x";
+
+
+        canvas.style.width =
+            (512*z) + "px";
+
+        canvas.style.height =
+            (512*z) + "px";
+
+    }
+);
+
+
+/* =========================================================
+   FPS
+========================================================= */
+
+document.getElementById(
+    "fps"
+).addEventListener(
+    "input",
+    function(){
+
+        document.getElementById(
+            "fpsValue"
+        ).textContent =
+            this.value;
+
+    }
+);
+
+
+/* =========================================================
+   REPRODUCCIÓN
+========================================================= */
+
+function playAnimation(){
+
+    stopAnimation();
+
+    playing=true;
+
+    let i=0;
+
+    const fps =
+        parseInt(
+            document.getElementById(
+                "fps"
+            ).value
+        );
+
+
+    animationTimer =
+        setInterval(()=>{
+
+            currentFrame =
+                i;
+
+            render();
+
+            i++;
+
+            if(
+                i >= frames.length
+            ){
+
+                i=0;
+
+            }
+
+        },1000/fps);
+
+}
+
+
+function stopAnimation(){
+
+    playing=false;
+
+    clearInterval(
+        animationTimer
+    );
+
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+function updateTimeline(){
+
+    const container =
+        document.getElementById(
+            "framesContainer"
+        );
+
+
+    container.innerHTML="";
+
+
+    frames.forEach(
+        (frame,index)=>{
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "frame";
+
+
+            if(
+                index === currentFrame
+            ){
+
+                div.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const mini =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            mini.width=64;
+
+            mini.height=64;
+
+
+            const mctx =
+                mini.getContext(
+                    "2d"
+                );
+
+
+            mctx.imageSmoothingEnabled=false;
+
+            const size =
+                64/grid;
+
+
+            mctx.fillStyle =
+                "#fff";
+
+            mctx.fillRect(
+                0,
+                0,
+                64,
+                64
+            );
+
+
+            for(
+                let l=0;
+                l<frame.layers.length;
+                l++
+            ){
+
+                for(
+                    let y=0;
+                    y<grid;
+                    y++
+                ){
+
+                    for(
+                        let x=0;
+                        x<grid;
+                        x++
+                    ){
+
+                        const color =
+                            frame
+                            .layers[l][y][x];
+
+                        if(color){
+
+                            mctx.fillStyle =
+                                color;
+
+                            mctx.fillRect(
+
+                                x*size,
+
+                                y*size,
+
+                                size,
+
+                                size
+
+                            );
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+            div.appendChild(
+                mini
+            );
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+
+            title.className =
+                "frameTitle";
+
+
+            title.textContent =
+                "Frame " +
+                (index+1);
+
+
+            div.appendChild(
+                title
+            );
+
+
+            div.onclick=()=>{
+
+                currentFrame =
+                    index;
+
+                render();
+
+            };
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+function updateStatus(){
+
+    document.getElementById(
+        "status"
+    ).textContent =
+
+        "Frame " +
+        (currentFrame+1) +
+        " / " +
+        frames.length +
+
+        " · Grid " +
+        grid +
+        "×" +
+        grid +
+
+        " · Capa " +
+        (currentLayer+1);
+
+}
+
+
+/* =========================================================
+   EXPORTAR PNG
+========================================================= */
+
+function createExportCanvas(frame){
+
+    const out =
+        document.createElement(
+            "canvas"
+        );
+
+
+    out.width =
+        grid;
+
+    out.height =
+        grid;
+
+
+    const octx =
+        out.getContext(
+            "2d"
+        );
+
+
+    octx.imageSmoothingEnabled=false;
+
+
+    octx.fillStyle =
+        "#ffffff";
+
+    octx.fillRect(
+        0,
+        0,
+        grid,
+        grid
+    );
+
+
+    for(
+        let l=0;
+        l<frame.layers.length;
+        l++
+    ){
+
+        for(
+            let y=0;
+            y<grid;
+            y++
+        ){
+
+            for(
+                let x=0;
+                x<grid;
+                x++
+            ){
+
+                const color =
+                    frame.layers[l][y][x];
+
+                if(color){
+
+                    octx.fillStyle =
+                        color;
+
+                    octx.fillRect(
+                        x,
+                        y,
+                        1,
+                        1
+                    );
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return out;
+
+}
+
+
+function exportPNG(){
+
+    const out =
+        createExportCanvas(
+            frames[currentFrame]
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.download =
+        "PixelFrame.png";
+
+
+    a.href =
+        out.toDataURL(
+            "image/png"
+        );
+
+
+    a.click();
+
+}
+
+
+/* =========================================================
+   GUARDAR PROYECTO
+========================================================= */
+
+function saveProject(){
+
+    const project={
+
+        name:
+            "PixelFrame Laptop Cinema",
+
+        grid,
+
+        frames,
+
+        currentFrame
+
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    project
+                )
+            ],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href=url;
+
+    a.download =
+        "PixelFrame_Project.pfc";
+
+    a.click();
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================================================
+   CARGAR PROYECTO
+========================================================= */
+
+function loadProject(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file)
+        return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e){
+
+            try{
+
+                const project =
+                    JSON.parse(
+                        e.target.result
+                    );
+
+
+                grid =
+                    project.grid;
+
+                frames =
+                    project.frames;
+
+                currentFrame =
+                    project.currentFrame || 0;
+
+
+                pixelSize =
+                    canvas.width / grid;
+
+
+                document.getElementById(
+                    "gridSize"
+                ).value =
+                    grid;
+
+
+                render();
+
+
+            }catch(error){
+
+                alert(
+                    "El proyecto no es válido."
+                );
+
+            }
+
+        };
+
+
+    reader.readAsText(file);
+
+}
+
+
+/* =========================================================
+   VIDEO WEBM
+========================================================= */
+
+async function exportVideo(){
+
+    if(
+        !window.MediaRecorder
+    ){
+
+        alert(
+            "Tu navegador no permite exportar video."
+        );
+
+        return;
+
+    }
+
+
+    stopAnimation();
+
+
+    const fps =
+        parseInt(
+            document.getElementById(
+                "fps"
+            ).value
+        );
+
+
+    const videoCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    /*
+    Exportamos cada pixel como
+    bloque grande para conservar
+    el estilo pixel art.
+    */
+
+    const scale = 8;
+
+    videoCanvas.width =
+        grid * scale;
+
+    videoCanvas.height =
+        grid * scale;
+
+
+    const vctx =
+        videoCanvas.getContext(
+            "2d"
+        );
+
+
+    vctx.imageSmoothingEnabled=false;
+
+
+    const stream =
+        videoCanvas.captureStream(
+            fps
+        );
+
+
+    const recorder =
+        new MediaRecorder(
+            stream,
+            {
+                mimeType:
+                    "video/webm"
+            }
+        );
+
+
+    const chunks=[];
+
+
+    recorder.ondataavailable =
+        e=>{
+
+            if(e.data.size)
+                chunks.push(e.data);
+
+        };
+
+
+    recorder.start();
+
+
+    const delay =
+        1000 / fps;
+
+
+    for(
+        const frame of frames
+    ){
+
+        const source =
+            createExportCanvas(
+                frame
+            );
+
+
+        vctx.clearRect(
+            0,
+            0,
+            videoCanvas.width,
+            videoCanvas.height
+        );
+
+
+        vctx.drawImage(
+
+            source,
+
+            0,
+            0,
+
+            videoCanvas.width,
+            videoCanvas.height
+
+        );
+
+
+        await new Promise(
+            resolve=>
+                setTimeout(
+                    resolve,
+                    delay
+                )
+        );
+
+    }
+
+
+    recorder.stop();
+
+
+    await new Promise(
+        resolve=>
+            recorder.onstop =
+                resolve
+    );
+
+
+    const blob =
+        new Blob(
+            chunks,
+            {
+                type:
+                    "video/webm"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href=url;
+
+    a.download =
+        "PixelFrame_Animation.webm";
+
+    a.click();
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================================================
+   TECLADO
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            e.ctrlKey &&
+            e.key.toLowerCase()==="z"
+        ){
+
+            e.preventDefault();
+
+            undo();
+
+        }
+
+
+        if(
+            e.ctrlKey &&
+            e.key.toLowerCase()==="y"
+        ){
+
+            e.preventDefault();
+
+            redo();
+
+        }
+
+
+        if(
+            e.key===" "
+        ){
+
+            e.preventDefault();
+
+            if(playing)
+                stopAnimation();
+            else
+                playAnimation();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FINAL
+========================================================= */
+
+render();
+
+</script>
+
+</body>
+</html>666666666662
