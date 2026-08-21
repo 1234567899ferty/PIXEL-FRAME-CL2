@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PixelFrameCineLaptop</title>
+<title>PixelFrame Cine Laptop</title>
 
 <style>
 
@@ -16,9 +16,13 @@ body{
     margin:0;
     background:#080808;
     color:#fff;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     overflow-x:hidden;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 header{
     background:#111;
@@ -35,6 +39,10 @@ header{
 .logo span{
     color:#00eaff;
 }
+
+/* =========================
+   TOOLBAR
+========================= */
 
 .toolbar{
     background:#151515;
@@ -93,13 +101,21 @@ select{
     border:1px solid #444;
 }
 
+/* =========================
+   MAIN
+========================= */
+
 .main{
     display:flex;
     min-height:calc(100vh - 100px);
 }
 
+/* =========================
+   SIDE PANEL
+========================= */
+
 .side{
-    width:210px;
+    width:220px;
     background:#101010;
     padding:10px;
     border-right:1px solid #333;
@@ -108,6 +124,15 @@ select{
 .side h3{
     margin-top:5px;
 }
+
+.panelButton{
+    width:100%;
+    margin-bottom:6px;
+}
+
+/* =========================
+   WORKSPACE
+========================= */
 
 .workspace{
     flex:1;
@@ -133,6 +158,10 @@ canvas{
     touch-action:none;
     cursor:crosshair;
 }
+
+/* =========================
+   TIMELINE
+========================= */
 
 .timeline{
     background:#111;
@@ -170,6 +199,10 @@ canvas{
     margin-top:4px;
 }
 
+/* =========================
+   STATUS
+========================= */
+
 .status{
     text-align:center;
     color:#aaa;
@@ -177,10 +210,16 @@ canvas{
     font-size:13px;
 }
 
-.panelButton{
-    width:100%;
-    margin-bottom:6px;
+.saveStatus{
+    text-align:center;
+    font-size:11px;
+    color:#6f6;
+    margin:5px 0 10px;
 }
+
+/* =========================
+   INTRO
+========================= */
 
 #intro{
     position:fixed;
@@ -210,26 +249,53 @@ canvas{
 }
 
 @keyframes introLogo{
+
     from{
         transform:scale(.5);
         opacity:0;
     }
+
     to{
         transform:scale(1);
         opacity:1;
     }
+
 }
 
 @keyframes introOut{
+
     0%,75%{
         opacity:1;
         pointer-events:auto;
     }
+
     100%{
         opacity:0;
         pointer-events:none;
     }
+
 }
+
+/* =========================
+   FOOTER
+========================= */
+
+.copyright{
+    background:#080808;
+    border-top:1px solid #333;
+    color:#777;
+    text-align:center;
+    padding:18px 10px;
+    font-size:12px;
+}
+
+.copyright strong{
+    color:#aaa;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(max-width:800px){
 
@@ -254,12 +320,14 @@ canvas{
 
 <body>
 
-<!-- INTRO -->
+<!-- =========================
+     INTRO
+========================= -->
 
 <div id="intro">
 
     <div class="introLogo">
-        🎬 <span>PixelFrame</span> CINE LAPTOP
+        🎬 <span>PixelFrame</span> Cine Laptop
     </div>
 
     <div class="introSub">
@@ -268,15 +336,23 @@ canvas{
 
 </div>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
 
     <div class="logo">
-        🎬 <span>PixelFrame</span> CINE LAPTOP
+        🎬 <span>PixelFrame</span> Cine Laptop
     </div>
 
 </header>
 
-<!-- HERRAMIENTAS -->
+
+<!-- =========================
+     HERRAMIENTAS
+========================= -->
 
 <div class="toolbar">
 
@@ -302,16 +378,24 @@ canvas{
             value="#000000">
     </label>
 
-    <button id="pencilBtn" onclick="setTool('pencil')">
+    <button
+        id="pencilBtn"
+        onclick="setTool('pencil')">
+
         ✏️ Lápiz
+
     </button>
 
     <button onclick="setTool('eraser')">
+
         🧽 Borrador
+
     </button>
 
     <button onclick="setTool('fill')">
+
         🪣 Rellenar
+
     </button>
 
     <button onclick="undo()">
@@ -323,84 +407,176 @@ canvas{
     </button>
 
     <button onclick="clearFrame()">
+
         🗑️ Limpiar
+
     </button>
 
 </div>
 
+
+<!-- =========================
+     MAIN
+========================= -->
+
 <div class="main">
 
-<!-- PANEL -->
+
+<!-- =========================
+     PANEL
+========================= -->
 
 <div class="side">
 
+    <h3>📁 Proyecto</h3>
+
+    <button
+        class="panelButton"
+        onclick="newProject()">
+
+        🆕 Nuevo Proyecto
+
+    </button>
+
+    <button
+        class="panelButton"
+        onclick="saveProject()">
+
+        💾 Guardar Proyecto
+
+    </button>
+
+    <button
+        class="panelButton"
+        onclick="deleteSavedProject()">
+
+        🗑️ Borrar Guardado
+
+    </button>
+
+    <div
+        id="saveStatus"
+        class="saveStatus">
+
+        💾 Guardado automático activo
+
+    </div>
+
+
     <h3>🎞️ Animación</h3>
 
-    <button class="panelButton" onclick="newFrame()">
+    <button
+        class="panelButton"
+        onclick="newFrame()">
+
         ➕ Nuevo Frame
+
     </button>
 
-    <button class="panelButton" onclick="duplicateFrame()">
+    <button
+        class="panelButton"
+        onclick="duplicateFrame()">
+
         📋 Duplicar Frame
+
     </button>
 
-    <button class="panelButton" onclick="deleteFrame()">
+    <button
+        class="panelButton"
+        onclick="deleteFrame()">
+
         🗑️ Eliminar Frame
+
     </button>
 
-    <button class="panelButton" onclick="playAnimation()">
+    <button
+        class="panelButton"
+        onclick="playAnimation()">
+
         ▶️ Reproducir
+
     </button>
 
-    <button class="panelButton" onclick="stopAnimation()">
+    <button
+        class="panelButton"
+        onclick="stopAnimation()">
+
         ⏹️ Detener
+
     </button>
+
 
     <label>
+
         FPS:
+
         <input
             id="fps"
             type="range"
             min="1"
             max="30"
             value="8">
+
     </label>
 
-    <span id="fpsValue">8</span>
+    <span id="fpsValue">
+        8
+    </span>
+
 
     <hr>
+
 
     <h3>🔍 Vista</h3>
 
     <label>
+
         Zoom:
+
         <input
             id="zoom"
             type="range"
             min="1"
             max="10"
             value="2">
+
     </label>
 
-    <span id="zoomValue">2x</span>
+    <span id="zoomValue">
+        2x
+    </span>
+
 
     <br><br>
 
-    <button class="panelButton" onclick="toggleGrid()">
+
+    <button
+        class="panelButton"
+        onclick="toggleGrid()">
+
         🔲 Cuadrícula
+
     </button>
 
-    <button class="panelButton" onclick="toggleOnion()">
+
+    <button
+        class="panelButton"
+        onclick="toggleOnion()">
+
         🧅 Onion Skin
+
     </button>
+
 
     <hr>
 
+
     <h3>📚 Capas</h3>
 
-    <select id="layerSelect"
-            class="panelButton"
-            onchange="changeLayer()">
+    <select
+        id="layerSelect"
+        class="panelButton"
+        onchange="changeLayer()">
 
         <option value="0">
             Capa 1
@@ -416,19 +592,18 @@ canvas{
 
     </select>
 
+
     <hr>
 
-    <h3>💾 Proyecto</h3>
 
-    <button class="panelButton" onclick="saveProject()">
-        💾 Guardar
-    </button>
+    <h3>📂 Archivo</h3>
 
     <button
         class="panelButton"
         onclick="document.getElementById('projectFile').click()">
 
-        📂 Cargar
+        📂 Cargar Archivo
+
     </button>
 
     <input
@@ -438,21 +613,34 @@ canvas{
         style="display:none"
         onchange="loadProject(event)">
 
+
     <hr>
+
 
     <h3>📤 Exportar</h3>
 
-    <button class="panelButton" onclick="exportPNG()">
+    <button
+        class="panelButton"
+        onclick="exportPNG()">
+
         🖼️ PNG
+
     </button>
 
-    <button class="panelButton" onclick="exportVideo()">
+    <button
+        class="panelButton"
+        onclick="exportVideo()">
+
         🎥 VIDEO WebM
+
     </button>
 
 </div>
 
-<!-- CANVAS -->
+
+<!-- =========================
+     CANVAS
+========================= -->
 
 <div class="workspace">
 
@@ -470,11 +658,16 @@ canvas{
 
 </div>
 
-<!-- TIMELINE -->
+
+<!-- =========================
+     TIMELINE
+========================= -->
 
 <div class="timeline">
 
-    <strong>🎞️ Línea de tiempo</strong>
+    <strong>
+        🎞️ Línea de tiempo
+    </strong>
 
     <div
         id="framesContainer"
@@ -482,6 +675,7 @@ canvas{
     </div>
 
 </div>
+
 
 <div
     id="status"
@@ -491,11 +685,42 @@ canvas{
 
 </div>
 
+
+<!-- =========================
+     COPYRIGHT
+========================= -->
+
+<footer class="copyright">
+
+    <strong>
+        © 2026 Cine Laptop. Todos los derechos reservados.
+    </strong>
+
+    <br>
+
+    PixelFrame Cine Laptop
+
+</footer>
+
+
 <script>
 
 /* =========================================================
-   PIXELFRAME LAPTOP CINEMA
-   MOTOR DE PIXEL ART
+   PIXELFRAME CINE LAPTOP
+   MOTOR DE PIXEL ART + ANIMACIÓN
+========================================================= */
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+const STORAGE_KEY =
+    "PixelFrameCineLaptop_Project";
+
+
+/* =========================================================
+   CANVAS
 ========================================================= */
 
 const canvas =
@@ -536,12 +761,6 @@ let history = [];
 
 let redoStack = [];
 
-
-/*
-Cada frame contiene 3 capas.
-Cada capa contiene una matriz de colores.
-*/
-
 let frames = [];
 
 
@@ -553,11 +772,19 @@ function createLayer(){
 
     const layer = [];
 
-    for(let y=0;y<grid;y++){
+    for(
+        let y = 0;
+        y < grid;
+        y++
+    ){
 
         layer[y] = [];
 
-        for(let x=0;x<grid;x++){
+        for(
+            let x = 0;
+            x < grid;
+            x++
+        ){
 
             layer[y][x] = null;
 
@@ -590,16 +817,7 @@ function createFrame(){
 
 
 /* =========================================================
-   INICIO
-========================================================= */
-
-frames.push(createFrame());
-
-render();
-
-
-/* =========================================================
-   COPIA PROFUNDA
+   CLONAR
 ========================================================= */
 
 function clone(obj){
@@ -612,7 +830,370 @@ function clone(obj){
 
 
 /* =========================================================
-   GUARDAR HISTORIAL
+   CREAR PROYECTO NUEVO
+========================================================= */
+
+function createNewProject(){
+
+    grid = 16;
+
+    pixelSize =
+        canvas.width / grid;
+
+    currentFrame = 0;
+
+    currentLayer = 0;
+
+    showGrid = true;
+
+    onionSkin = false;
+
+    tool = "pencil";
+
+    frames = [
+        createFrame()
+    ];
+
+    history = [];
+
+    redoStack = [];
+
+
+    document.getElementById(
+        "gridSize"
+    ).value = 16;
+
+
+    document.getElementById(
+        "layerSelect"
+    ).value = 0;
+
+
+    document.getElementById(
+        "zoom"
+    ).value = 2;
+
+
+    document.getElementById(
+        "zoomValue"
+    ).textContent = "2x";
+
+
+    canvas.style.width =
+        "1024px";
+
+
+    canvas.style.height =
+        "1024px";
+
+
+    render();
+
+}
+
+
+/* =========================================================
+   NUEVO PROYECTO
+========================================================= */
+
+function newProject(){
+
+    const hasDrawing =
+        frames.some(
+            frame =>
+                frame.layers.some(
+                    layer =>
+                        layer.some(
+                            row =>
+                                row.some(
+                                    pixel =>
+                                        pixel !== null
+                                )
+                        )
+                )
+        );
+
+
+    if(
+        hasDrawing ||
+        frames.length > 1
+    ){
+
+        const confirmNew =
+            confirm(
+                "⚠️ ¿Crear un nuevo proyecto?\n\n" +
+                "El proyecto actual se cerrará.\n\n" +
+                "El proyecto guardado automáticamente seguirá disponible."
+            );
+
+
+        if(!confirmNew)
+            return;
+
+    }
+
+
+    createNewProject();
+
+}
+
+
+/* =========================================================
+   GUARDADO AUTOMÁTICO
+========================================================= */
+
+function autoSave(){
+
+    try{
+
+        const project = {
+
+            version:1,
+
+            name:
+                "PixelFrame Cine Laptop",
+
+            grid,
+
+            frames,
+
+            currentFrame,
+
+            currentLayer,
+
+            showGrid,
+
+            onionSkin,
+
+            tool,
+
+            fps:
+                document.getElementById(
+                    "fps"
+                ).value,
+
+            zoom:
+                document.getElementById(
+                    "zoom"
+                ).value
+
+        };
+
+
+        localStorage.setItem(
+
+            STORAGE_KEY,
+
+            JSON.stringify(project)
+
+        );
+
+
+        document.getElementById(
+            "saveStatus"
+        ).textContent =
+
+            "💾 Guardado: " +
+            new Date().toLocaleTimeString();
+
+
+    }catch(error){
+
+        console.error(
+            "Error guardando:",
+            error
+        );
+
+
+        document.getElementById(
+            "saveStatus"
+        ).textContent =
+            "⚠️ No se pudo guardar";
+
+    }
+
+}
+
+
+/* =========================================================
+   CARGAR AUTOGUARDADO
+========================================================= */
+
+function loadAutoSave(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if(!saved){
+
+            createNewProject();
+
+            return;
+
+        }
+
+
+        const project =
+            JSON.parse(saved);
+
+
+        if(
+            !project.frames ||
+            !project.grid
+        ){
+
+            createNewProject();
+
+            return;
+
+        }
+
+
+        grid =
+            project.grid;
+
+
+        frames =
+            project.frames;
+
+
+        currentFrame =
+            project.currentFrame || 0;
+
+
+        currentLayer =
+            project.currentLayer || 0;
+
+
+        showGrid =
+            project.showGrid !== false;
+
+
+        onionSkin =
+            project.onionSkin || false;
+
+
+        tool =
+            project.tool || "pencil";
+
+
+        pixelSize =
+            canvas.width / grid;
+
+
+        document.getElementById(
+            "gridSize"
+        ).value =
+            grid;
+
+
+        document.getElementById(
+            "layerSelect"
+        ).value =
+            currentLayer;
+
+
+        if(project.fps){
+
+            document.getElementById(
+                "fps"
+            ).value =
+                project.fps;
+
+
+            document.getElementById(
+                "fpsValue"
+            ).textContent =
+                project.fps;
+
+        }
+
+
+        if(project.zoom){
+
+            document.getElementById(
+                "zoom"
+            ).value =
+                project.zoom;
+
+
+            document.getElementById(
+                "zoomValue"
+            ).textContent =
+                project.zoom + "x";
+
+
+            canvas.style.width =
+                (512 * project.zoom) +
+                "px";
+
+
+            canvas.style.height =
+                (512 * project.zoom) +
+                "px";
+
+        }
+
+
+        document.getElementById(
+            "saveStatus"
+        ).textContent =
+            "🔄 Proyecto recuperado";
+
+
+        render();
+
+
+    }catch(error){
+
+        console.error(
+            "Error cargando proyecto:",
+            error
+        );
+
+        createNewProject();
+
+    }
+
+}
+
+
+/* =========================================================
+   BORRAR AUTOGUARDADO
+========================================================= */
+
+function deleteSavedProject(){
+
+    const confirmDelete =
+        confirm(
+            "🗑️ ¿Borrar definitivamente el proyecto guardado?"
+        );
+
+
+    if(!confirmDelete)
+        return;
+
+
+    localStorage.removeItem(
+        STORAGE_KEY
+    );
+
+
+    document.getElementById(
+        "saveStatus"
+    ).textContent =
+        "🗑️ Guardado eliminado";
+
+}
+
+
+/* =========================================================
+   HISTORIAL
 ========================================================= */
 
 function saveHistory(){
@@ -621,11 +1202,13 @@ function saveHistory(){
         clone(frames)
     );
 
+
     if(history.length > 30){
 
         history.shift();
 
     }
+
 
     redoStack = [];
 
@@ -633,7 +1216,7 @@ function saveHistory(){
 
 
 /* =========================================================
-   DESHACER
+   UNDO
 ========================================================= */
 
 function undo(){
@@ -641,20 +1224,25 @@ function undo(){
     if(history.length === 0)
         return;
 
+
     redoStack.push(
         clone(frames)
     );
 
+
     frames =
         history.pop();
 
+
     render();
+
+    autoSave();
 
 }
 
 
 /* =========================================================
-   REHACER
+   REDO
 ========================================================= */
 
 function redo(){
@@ -662,14 +1250,19 @@ function redo(){
     if(redoStack.length === 0)
         return;
 
+
     history.push(
         clone(frames)
     );
 
+
     frames =
         redoStack.pop();
 
+
     render();
+
+    autoSave();
 
 }
 
@@ -688,11 +1281,9 @@ function render(){
     );
 
 
-    /*
-    Fondo
-    */
+    ctx.fillStyle =
+        "#ffffff";
 
-    ctx.fillStyle="#ffffff";
 
     ctx.fillRect(
         0,
@@ -702,36 +1293,24 @@ function render(){
     );
 
 
-    /*
-    ONION SKIN
-    */
-
     if(
         onionSkin &&
         currentFrame > 0
     ){
 
         drawFrame(
-            frames[currentFrame-1],
+            frames[currentFrame - 1],
             .25
         );
 
     }
 
 
-    /*
-    FRAME ACTUAL
-    */
-
     drawFrame(
         frames[currentFrame],
         1
     );
 
-
-    /*
-    GRID
-    */
 
     if(showGrid){
 
@@ -751,38 +1330,46 @@ function render(){
    DIBUJAR FRAME
 ========================================================= */
 
-function drawFrame(frame,alpha){
+function drawFrame(
+    frame,
+    alpha
+){
 
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha =
+        alpha;
+
 
     for(
-        let l=0;
-        l<frame.layers.length;
+        let l = 0;
+        l < frame.layers.length;
         l++
     ){
 
         const layer =
             frame.layers[l];
 
+
         for(
-            let y=0;
-            y<grid;
+            let y = 0;
+            y < grid;
             y++
         ){
 
             for(
-                let x=0;
-                x<grid;
+                let x = 0;
+                x < grid;
                 x++
             ){
 
                 const color =
                     layer[y][x];
 
+
                 if(color){
 
                     ctx.fillStyle =
                         color;
+
 
                     ctx.fillRect(
 
@@ -804,6 +1391,7 @@ function drawFrame(frame,alpha){
 
     }
 
+
     ctx.globalAlpha = 1;
 
 }
@@ -820,9 +1408,10 @@ function drawGrid(){
 
     ctx.lineWidth = 1;
 
+
     for(
-        let i=0;
-        i<=grid;
+        let i = 0;
+        i <= grid;
         i++
     ){
 
@@ -867,7 +1456,7 @@ function drawGrid(){
 
 
 /* =========================================================
-   OBTENER POSICIÓN
+   POSICIÓN DEL PIXEL
 ========================================================= */
 
 function getCell(e){
@@ -875,27 +1464,38 @@ function getCell(e){
     const rect =
         canvas.getBoundingClientRect();
 
+
     const scaleX =
         canvas.width /
         rect.width;
+
 
     const scaleY =
         canvas.height /
         rect.height;
 
+
     const px =
-        (e.clientX - rect.left)
-        * scaleX;
+        (e.clientX - rect.left) *
+        scaleX;
+
 
     const py =
-        (e.clientY - rect.top)
-        * scaleY;
+        (e.clientY - rect.top) *
+        scaleY;
+
 
     return {
 
-        x:Math.floor(px / pixelSize),
+        x:
+            Math.floor(
+                px / pixelSize
+            ),
 
-        y:Math.floor(py / pixelSize)
+        y:
+            Math.floor(
+                py / pixelSize
+            )
 
     };
 
@@ -910,6 +1510,7 @@ function paint(e){
 
     const cell =
         getCell(e);
+
 
     if(
         cell.x < 0 ||
@@ -964,7 +1565,7 @@ function paint(e){
 
 canvas.addEventListener(
     "pointerdown",
-    e=>{
+    e => {
 
         e.preventDefault();
 
@@ -980,7 +1581,7 @@ canvas.addEventListener(
 
 canvas.addEventListener(
     "pointermove",
-    e=>{
+    e => {
 
         if(!drawing)
             return;
@@ -993,9 +1594,15 @@ canvas.addEventListener(
 
 window.addEventListener(
     "pointerup",
-    ()=>{
+    () => {
 
-        drawing=false;
+        if(drawing){
+
+            drawing = false;
+
+            autoSave();
+
+        }
 
     }
 );
@@ -1010,6 +1617,31 @@ function setTool(newTool){
     tool =
         newTool;
 
+
+    document
+        .querySelectorAll(
+            ".toolbar button"
+        )
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "active"
+                )
+        );
+
+
+    if(tool === "pencil"){
+
+        document
+            .getElementById(
+                "pencilBtn"
+            )
+            .classList.add(
+                "active"
+            );
+
+    }
+
 }
 
 
@@ -1023,8 +1655,10 @@ function floodFill(x,y){
         frames[currentFrame]
         .layers[currentLayer];
 
+
     const target =
         layer[y][x];
+
 
     const replacement =
         document.getElementById(
@@ -1036,7 +1670,8 @@ function floodFill(x,y){
         return;
 
 
-    const queue = [[x,y]];
+    const queue =
+        [[x,y]];
 
 
     while(queue.length){
@@ -1049,10 +1684,10 @@ function floodFill(x,y){
 
 
         if(
-            cx<0 ||
-            cy<0 ||
-            cx>=grid ||
-            cy>=grid
+            cx < 0 ||
+            cy < 0 ||
+            cx >= grid ||
+            cy >= grid
         )
             continue;
 
@@ -1110,48 +1745,50 @@ function applyGrid(){
     }
 
 
+    if(newGrid === grid)
+        return;
+
+
     saveHistory();
 
 
-    /*
-    Convertimos TODOS los frames
-    a la nueva resolución.
-    */
-
     frames =
-        frames.map(frame=>{
+        frames.map(
+            frame => {
 
-            const newFrame =
-                createFrame();
+                const newFrame =
+                    createFrame();
 
-
-            for(
-                let l=0;
-                l<3;
-                l++
-            ){
 
                 for(
-                    let y=0;
-                    y<newGrid;
-                    y++
+                    let l = 0;
+                    l < 3;
+                    l++
                 ){
 
                     for(
-                        let x=0;
-                        x<newGrid;
-                        x++
+                        let y = 0;
+                        y < newGrid;
+                        y++
                     ){
 
-                        if(
-                            y < grid &&
-                            x < grid
+                        for(
+                            let x = 0;
+                            x < newGrid;
+                            x++
                         ){
 
-                            newFrame
-                            .layers[l][y][x] =
-                                frame
-                                .layers[l][y][x];
+                            if(
+                                y < grid &&
+                                x < grid
+                            ){
+
+                                newFrame
+                                .layers[l][y][x] =
+                                    frame
+                                    .layers[l][y][x];
+
+                            }
 
                         }
 
@@ -1159,11 +1796,11 @@ function applyGrid(){
 
                 }
 
+
+                return newFrame;
+
             }
-
-            return newFrame;
-
-        });
+        );
 
 
     grid =
@@ -1176,6 +1813,8 @@ function applyGrid(){
 
     render();
 
+    autoSave();
+
 }
 
 
@@ -1187,15 +1826,20 @@ function newFrame(){
 
     saveHistory();
 
+
     frames.splice(
         currentFrame + 1,
         0,
         createFrame()
     );
 
+
     currentFrame++;
 
+
     render();
+
+    autoSave();
 
 }
 
@@ -1207,6 +1851,7 @@ function newFrame(){
 function duplicateFrame(){
 
     saveHistory();
+
 
     frames.splice(
 
@@ -1220,9 +1865,13 @@ function duplicateFrame(){
 
     );
 
+
     currentFrame++;
 
+
     render();
+
+    autoSave();
 
 }
 
@@ -1244,6 +1893,7 @@ function deleteFrame(){
 
     saveHistory();
 
+
     frames.splice(
         currentFrame,
         1
@@ -1263,6 +1913,8 @@ function deleteFrame(){
 
     render();
 
+    autoSave();
+
 }
 
 
@@ -1274,10 +1926,14 @@ function clearFrame(){
 
     saveHistory();
 
+
     frames[currentFrame] =
         createFrame();
 
+
     render();
+
+    autoSave();
 
 }
 
@@ -1295,6 +1951,9 @@ function changeLayer(){
             ).value
         );
 
+
+    autoSave();
+
 }
 
 
@@ -1303,7 +1962,10 @@ function toggleGrid(){
     showGrid =
         !showGrid;
 
+
     render();
+
+    autoSave();
 
 }
 
@@ -1313,7 +1975,10 @@ function toggleOnion(){
     onionSkin =
         !onionSkin;
 
+
     render();
+
+    autoSave();
 
 }
 
@@ -1333,6 +1998,7 @@ document.getElementById(
                 this.value
             );
 
+
         document.getElementById(
             "zoomValue"
         ).textContent =
@@ -1340,10 +2006,14 @@ document.getElementById(
 
 
         canvas.style.width =
-            (512*z) + "px";
+            (512 * z) + "px";
+
 
         canvas.style.height =
-            (512*z) + "px";
+            (512 * z) + "px";
+
+
+        autoSave();
 
     }
 );
@@ -1364,6 +2034,9 @@ document.getElementById(
         ).textContent =
             this.value;
 
+
+        autoSave();
+
     }
 );
 
@@ -1376,9 +2049,12 @@ function playAnimation(){
 
     stopAnimation();
 
-    playing=true;
 
-    let i=0;
+    playing = true;
+
+
+    let i = 0;
+
 
     const fps =
         parseInt(
@@ -1389,31 +2065,41 @@ function playAnimation(){
 
 
     animationTimer =
-        setInterval(()=>{
+        setInterval(
 
-            currentFrame =
-                i;
+            () => {
 
-            render();
+                currentFrame =
+                    i;
 
-            i++;
 
-            if(
-                i >= frames.length
-            ){
+                render();
 
-                i=0;
 
-            }
+                i++;
 
-        },1000/fps);
+
+                if(
+                    i >= frames.length
+                ){
+
+                    i = 0;
+
+                }
+
+            },
+
+            1000 / fps
+
+        );
 
 }
 
 
 function stopAnimation(){
 
-    playing=false;
+    playing = false;
+
 
     clearInterval(
         animationTimer
@@ -1434,11 +2120,11 @@ function updateTimeline(){
         );
 
 
-    container.innerHTML="";
+    container.innerHTML = "";
 
 
     frames.forEach(
-        (frame,index)=>{
+        (frame,index) => {
 
             const div =
                 document.createElement(
@@ -1467,9 +2153,9 @@ function updateTimeline(){
                 );
 
 
-            mini.width=64;
+            mini.width = 64;
 
-            mini.height=64;
+            mini.height = 64;
 
 
             const mctx =
@@ -1478,14 +2164,17 @@ function updateTimeline(){
                 );
 
 
-            mctx.imageSmoothingEnabled=false;
+            mctx.imageSmoothingEnabled =
+                false;
+
 
             const size =
-                64/grid;
+                64 / grid;
 
 
             mctx.fillStyle =
                 "#fff";
+
 
             mctx.fillRect(
                 0,
@@ -1496,20 +2185,20 @@ function updateTimeline(){
 
 
             for(
-                let l=0;
-                l<frame.layers.length;
+                let l = 0;
+                l < frame.layers.length;
                 l++
             ){
 
                 for(
-                    let y=0;
-                    y<grid;
+                    let y = 0;
+                    y < grid;
                     y++
                 ){
 
                     for(
-                        let x=0;
-                        x<grid;
+                        let x = 0;
+                        x < grid;
                         x++
                     ){
 
@@ -1517,16 +2206,18 @@ function updateTimeline(){
                             frame
                             .layers[l][y][x];
 
+
                         if(color){
 
                             mctx.fillStyle =
                                 color;
 
+
                             mctx.fillRect(
 
-                                x*size,
+                                x * size,
 
-                                y*size,
+                                y * size,
 
                                 size,
 
@@ -1560,7 +2251,7 @@ function updateTimeline(){
 
             title.textContent =
                 "Frame " +
-                (index+1);
+                (index + 1);
 
 
             div.appendChild(
@@ -1568,14 +2259,18 @@ function updateTimeline(){
             );
 
 
-            div.onclick=()=>{
+            div.onclick =
+                () => {
 
-                currentFrame =
-                    index;
+                    currentFrame =
+                        index;
 
-                render();
 
-            };
+                    render();
+
+                    autoSave();
+
+                };
 
 
             container.appendChild(
@@ -1599,7 +2294,8 @@ function updateStatus(){
     ).textContent =
 
         "Frame " +
-        (currentFrame+1) +
+        (currentFrame + 1) +
+
         " / " +
         frames.length +
 
@@ -1609,13 +2305,13 @@ function updateStatus(){
         grid +
 
         " · Capa " +
-        (currentLayer+1);
+        (currentLayer + 1);
 
 }
 
 
 /* =========================================================
-   EXPORTAR PNG
+   CANVAS DE EXPORTACIÓN
 ========================================================= */
 
 function createExportCanvas(frame){
@@ -1629,6 +2325,7 @@ function createExportCanvas(frame){
     out.width =
         grid;
 
+
     out.height =
         grid;
 
@@ -1639,11 +2336,13 @@ function createExportCanvas(frame){
         );
 
 
-    octx.imageSmoothingEnabled=false;
+    octx.imageSmoothingEnabled =
+        false;
 
 
     octx.fillStyle =
         "#ffffff";
+
 
     octx.fillRect(
         0,
@@ -1654,30 +2353,33 @@ function createExportCanvas(frame){
 
 
     for(
-        let l=0;
-        l<frame.layers.length;
+        let l = 0;
+        l < frame.layers.length;
         l++
     ){
 
         for(
-            let y=0;
-            y<grid;
+            let y = 0;
+            y < grid;
             y++
         ){
 
             for(
-                let x=0;
-                x<grid;
+                let x = 0;
+                x < grid;
                 x++
             ){
 
                 const color =
-                    frame.layers[l][y][x];
+                    frame
+                    .layers[l][y][x];
+
 
                 if(color){
 
                     octx.fillStyle =
                         color;
+
 
                     octx.fillRect(
                         x,
@@ -1700,6 +2402,10 @@ function createExportCanvas(frame){
 }
 
 
+/* =========================================================
+   EXPORTAR PNG
+========================================================= */
+
 function exportPNG(){
 
     const out =
@@ -1715,7 +2421,7 @@ function exportPNG(){
 
 
     a.download =
-        "PixelFrame.png";
+        "PixelFrame_Cine_Laptop.png";
 
 
     a.href =
@@ -1735,31 +2441,60 @@ function exportPNG(){
 
 function saveProject(){
 
-    const project={
+    autoSave();
+
+
+    const project = {
+
+        version:1,
 
         name:
-            "PixelFrame Laptop Cinema",
+            "PixelFrame Cine Laptop",
+
+        copyright:
+            "© 2026 Cine Laptop. Todos los derechos reservados.",
 
         grid,
 
         frames,
 
-        currentFrame
+        currentFrame,
+
+        currentLayer,
+
+        showGrid,
+
+        onionSkin,
+
+        tool,
+
+        fps:
+            document.getElementById(
+                "fps"
+            ).value,
+
+        zoom:
+            document.getElementById(
+                "zoom"
+            ).value
 
     };
 
 
     const blob =
         new Blob(
+
             [
                 JSON.stringify(
                     project
                 )
             ],
+
             {
                 type:
                     "application/json"
             }
+
         );
 
 
@@ -1775,15 +2510,21 @@ function saveProject(){
         );
 
 
-    a.href=url;
+    a.href =
+        url;
+
 
     a.download =
-        "PixelFrame_Project.pfc";
+        "PixelFrame_Cine_Laptop.pfc";
+
 
     a.click();
 
 
-    URL.revokeObjectURL(url);
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+    );
 
 }
 
@@ -1796,6 +2537,7 @@ function loadProject(event){
 
     const file =
         event.target.files[0];
+
 
     if(!file)
         return;
@@ -1816,14 +2558,47 @@ function loadProject(event){
                     );
 
 
+                if(
+                    !project.frames ||
+                    !project.grid
+                ){
+
+                    throw new Error(
+                        "Proyecto inválido"
+                    );
+
+                }
+
+
+                stopAnimation();
+
+
                 grid =
                     project.grid;
+
 
                 frames =
                     project.frames;
 
+
                 currentFrame =
                     project.currentFrame || 0;
+
+
+                currentLayer =
+                    project.currentLayer || 0;
+
+
+                showGrid =
+                    project.showGrid !== false;
+
+
+                onionSkin =
+                    project.onionSkin || false;
+
+
+                tool =
+                    project.tool || "pencil";
 
 
                 pixelSize =
@@ -1836,13 +2611,77 @@ function loadProject(event){
                     grid;
 
 
+                document.getElementById(
+                    "layerSelect"
+                ).value =
+                    currentLayer;
+
+
+                if(project.fps){
+
+                    document.getElementById(
+                        "fps"
+                    ).value =
+                        project.fps;
+
+
+                    document.getElementById(
+                        "fpsValue"
+                    ).textContent =
+                        project.fps;
+
+                }
+
+
+                if(project.zoom){
+
+                    document.getElementById(
+                        "zoom"
+                    ).value =
+                        project.zoom;
+
+
+                    document.getElementById(
+                        "zoomValue"
+                    ).textContent =
+                        project.zoom + "x";
+
+
+                    canvas.style.width =
+                        (512 * project.zoom) +
+                        "px";
+
+
+                    canvas.style.height =
+                        (512 * project.zoom) +
+                        "px";
+
+                }
+
+
+                history = [];
+
+                redoStack = [];
+
+
                 render();
+
+
+                autoSave();
+
+
+                alert(
+                    "✅ Proyecto cargado correctamente."
+                );
 
 
             }catch(error){
 
+                console.error(error);
+
+
                 alert(
-                    "El proyecto no es válido."
+                    "❌ El proyecto no es válido."
                 );
 
             }
@@ -1856,7 +2695,7 @@ function loadProject(event){
 
 
 /* =========================================================
-   VIDEO WEBM
+   EXPORTAR VIDEO WEBM
 ========================================================= */
 
 async function exportVideo(){
@@ -1867,6 +2706,20 @@ async function exportVideo(){
 
         alert(
             "Tu navegador no permite exportar video."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !canvas.captureStream &&
+        !HTMLCanvasElement.prototype.captureStream
+    ){
+
+        alert(
+            "Tu navegador no permite crear videos desde Canvas."
         );
 
         return;
@@ -1891,16 +2744,12 @@ async function exportVideo(){
         );
 
 
-    /*
-    Exportamos cada pixel como
-    bloque grande para conservar
-    el estilo pixel art.
-    */
-
     const scale = 8;
+
 
     videoCanvas.width =
         grid * scale;
+
 
     videoCanvas.height =
         grid * scale;
@@ -1912,7 +2761,8 @@ async function exportVideo(){
         );
 
 
-    vctx.imageSmoothingEnabled=false;
+    vctx.imageSmoothingEnabled =
+        false;
 
 
     const stream =
@@ -1921,24 +2771,49 @@ async function exportVideo(){
         );
 
 
+    let mimeType =
+        "video/webm";
+
+
+    if(
+        !MediaRecorder.isTypeSupported(
+            "video/webm"
+        )
+    ){
+
+        mimeType = "";
+
+    }
+
+
     const recorder =
+        mimeType
+        ?
         new MediaRecorder(
             stream,
             {
-                mimeType:
-                    "video/webm"
+                mimeType
             }
+        )
+        :
+        new MediaRecorder(
+            stream
         );
 
 
-    const chunks=[];
+    const chunks = [];
 
 
     recorder.ondataavailable =
-        e=>{
+        e => {
 
-            if(e.data.size)
-                chunks.push(e.data);
+            if(e.data.size){
+
+                chunks.push(
+                    e.data
+                );
+
+            }
 
         };
 
@@ -1960,7 +2835,11 @@ async function exportVideo(){
             );
 
 
-        vctx.clearRect(
+        vctx.fillStyle =
+            "#ffffff";
+
+
+        vctx.fillRect(
             0,
             0,
             videoCanvas.width,
@@ -1976,13 +2855,14 @@ async function exportVideo(){
             0,
 
             videoCanvas.width,
+
             videoCanvas.height
 
         );
 
 
         await new Promise(
-            resolve=>
+            resolve =>
                 setTimeout(
                     resolve,
                     delay
@@ -1996,19 +2876,25 @@ async function exportVideo(){
 
 
     await new Promise(
-        resolve=>
+        resolve => {
+
             recorder.onstop =
-                resolve
+                resolve;
+
+        }
     );
 
 
     const blob =
         new Blob(
+
             chunks,
+
             {
                 type:
                     "video/webm"
             }
+
         );
 
 
@@ -2024,30 +2910,38 @@ async function exportVideo(){
         );
 
 
-    a.href=url;
+    a.href =
+        url;
+
 
     a.download =
-        "PixelFrame_Animation.webm";
+        "PixelFrame_Cine_Laptop_Animation.webm";
+
 
     a.click();
 
 
-    URL.revokeObjectURL(url);
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+    );
 
 }
 
 
 /* =========================================================
-   TECLADO
+   ATAJOS DE TECLADO
 ========================================================= */
 
 document.addEventListener(
     "keydown",
-    e=>{
+    e => {
+
+        /* CTRL + Z */
 
         if(
             e.ctrlKey &&
-            e.key.toLowerCase()==="z"
+            e.key.toLowerCase() === "z"
         ){
 
             e.preventDefault();
@@ -2057,9 +2951,11 @@ document.addEventListener(
         }
 
 
+        /* CTRL + Y */
+
         if(
             e.ctrlKey &&
-            e.key.toLowerCase()==="y"
+            e.key.toLowerCase() === "y"
         ){
 
             e.preventDefault();
@@ -2069,16 +2965,52 @@ document.addEventListener(
         }
 
 
+        /* ESPACIO */
+
         if(
-            e.key===" "
+            e.key === " "
         ){
 
             e.preventDefault();
 
-            if(playing)
+
+            if(playing){
+
                 stopAnimation();
-            else
+
+            }else{
+
                 playAnimation();
+
+            }
+
+        }
+
+
+        /* CTRL + S */
+
+        if(
+            e.ctrlKey &&
+            e.key.toLowerCase() === "s"
+        ){
+
+            e.preventDefault();
+
+            saveProject();
+
+        }
+
+
+        /* CTRL + N */
+
+        if(
+            e.ctrlKey &&
+            e.key.toLowerCase() === "n"
+        ){
+
+            e.preventDefault();
+
+            newProject();
 
         }
 
@@ -2087,14 +3019,14 @@ document.addEventListener(
 
 
 /* =========================================================
-   FINAL
+   INICIAR
 ========================================================= */
 
-render();
+loadAutoSave();
+
+setTool("pencil");
 
 </script>
-<hr>
-.                  | © Cine Laptop (2026)  derechos reservados por Fer Empresas 
-<hr> 
+
 </body>
 </html>
